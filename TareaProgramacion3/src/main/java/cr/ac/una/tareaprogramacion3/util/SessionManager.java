@@ -1,13 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.tareaprogramacion3.util;
 
-/**
- *
- * @author dylan
- */
 public class SessionManager {
-    
+
+    private static SessionManager instance;
+    private Object currentUser;
+
+    private SessionManager() {
+        // constructor privado
+    }
+
+    public static SessionManager getInstance() {
+        if (instance == null) {
+            instance = new SessionManager();
+        }
+        return instance;
+    }
+
+    public Object getCurrentUser() {
+        return currentUser;
+    }
+
+    public void logout() {
+        currentUser = null;
+        // lógica adicional de cierre de sesión
+    }
 }

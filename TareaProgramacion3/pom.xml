@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>cr.ac.una</groupId>
     <artifactId>TareaProgramacion3</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -18,7 +18,18 @@
         <hibernate.version>6.1.7.Final</hibernate.version>
         <poi.version>5.2.4</poi.version>
     </properties>
-    
+
+    <repositories>
+        <repository>
+            <id>openjfx</id>
+            <url>https://maven.pkg.github.com/openjfx</url>
+        </repository>
+        <repository>
+            <id>oracle</id>
+            <url>https://maven.oracle.com</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- JavaFX -->
         <dependency>
@@ -36,7 +47,7 @@
             <artifactId>javafx-web</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        
+
         <!-- JPA y Hibernate -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -44,25 +55,25 @@
             <version>${hibernate.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
-        
+
         <!-- Oracle JDBC Driver -->
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <version>21.9.0.0</version>
         </dependency>
-        
+
         <!-- Connection Pool -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.1</version>
         </dependency>
-        
+
         <!-- Apache POI para Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -74,7 +85,7 @@
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
         </dependency>
-        
+
         <!-- Web Services SOAP -->
         <dependency>
             <groupId>jakarta.xml.ws</groupId>
@@ -86,14 +97,14 @@
             <artifactId>jaxws-rt</artifactId>
             <version>3.0.2</version>
         </dependency>
-        
+
         <!-- Email -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
             <version>2.0.1</version>
         </dependency>
-        
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -105,28 +116,28 @@
             <artifactId>logback-classic</artifactId>
             <version>1.4.6</version>
         </dependency>
-        
+
         <!-- JSON Processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
-        
+
         <!-- Validation -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.0.Final</version>
         </dependency>
-        
+
         <!-- FontAwesome Icons -->
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx</artifactId>
             <version>8.9</version>
         </dependency>
-        
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -135,7 +146,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <!-- Maven Compiler Plugin -->
@@ -148,7 +159,7 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-            
+
             <!-- JavaFX Maven Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -158,7 +169,7 @@
                     <mainClass>cr.ac.una.tareaprogramacion3.App</mainClass>
                 </configuration>
             </plugin>
-            
+
             <!-- Maven Shade Plugin para crear ejecutable -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -180,7 +191,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Surefire Plugin para tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
