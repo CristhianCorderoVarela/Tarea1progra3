@@ -41,7 +41,7 @@ module cr.ac.una.administradorproyectos {
     // Exportar paquetes
     exports cr.ac.una.tareaprogramacion3;
     exports cr.ac.una.tareaprogramacion3.controller;
-    exports cr.ac.una.tareaprogramacion3.entity;
+    exports cr.ac.una.tareaprogramacion3.model;
     exports cr.ac.una.tareaprogramacion3.service;
     exports cr.ac.una.tareaprogramacion3.util;
     exports cr.ac.una.tareaprogramacion3.enums;
@@ -49,8 +49,8 @@ module cr.ac.una.administradorproyectos {
     // Abrir paquetes para reflexión
     opens cr.ac.una.tareaprogramacion3 to javafx.fxml;
     opens cr.ac.una.tareaprogramacion3.controller to javafx.fxml;
-    opens cr.ac.una.tareaprogramacion3.entity to org.hibernate.orm.core, jakarta.persistence;
-    opens cr.ac.una.tareaprogramacion3.dto to com.fasterxml.jackson.databind;
+    opens cr.ac.una.tareaprogramacion3.model to org.hibernate.orm.core, jakarta.persistence;
+  
 
     // Acceso a recursos
     opens cr.ac.una.tareaprogramacion3.views to javafx.fxml;
