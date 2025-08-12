@@ -1,44 +1,16 @@
 module cr.ac.una.administradorproyectos {
-    // JavaFX
+    // JavaFX que sí usas
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
 
-    // JPA y Hibernate
+    // JPA (Jakarta) + EclipseLink + JDBC
     requires jakarta.persistence;
-    requires org.hibernate.orm.core;
-    requires jakarta.validation;
-    requires org.hibernate.validator;
-
-    // Base de datos y conexión
+    requires org.eclipse.persistence.jpa;
+    requires org.eclipse.persistence.core;
     requires java.sql;
-    requires com.zaxxer.hikari;
+   
 
-    // Apache POI para Excel
-    requires org.apache.poi.poi;
-    requires org.apache.poi.ooxml;
-
-    // Email
-    requires jakarta.mail;
-
-    // Web Services
-    requires jakarta.xml.ws;
-
-    // JSON
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.core;
-
-    // Logging
-    requires org.slf4j;
-    requires ch.qos.logback.classic;
-    requires ch.qos.logback.core;
-
-    // Java base
-    requires java.base;
-    requires java.desktop;
-    requires java.prefs;
-
-    // Exportar paquetes
+    // Exports (si realmente los necesitas públicos)
     exports cr.ac.una.tareaprogramacion3;
     exports cr.ac.una.tareaprogramacion3.controller;
     exports cr.ac.una.tareaprogramacion3.model;
@@ -46,13 +18,14 @@ module cr.ac.una.administradorproyectos {
     exports cr.ac.una.tareaprogramacion3.util;
     exports cr.ac.una.tareaprogramacion3.enums;
 
-    // Abrir paquetes para reflexión
+    // Abre paquetes para FXML (controladores) y JPA (entidades)
     opens cr.ac.una.tareaprogramacion3 to javafx.fxml;
     opens cr.ac.una.tareaprogramacion3.controller to javafx.fxml;
-    opens cr.ac.una.tareaprogramacion3.model to org.hibernate.orm.core, jakarta.persistence;
-  
 
-    // Acceso a recursos
+    // MUY IMPORTANTE: abrir las entidades para la reflexión de JPA/EclipseLink
+    opens cr.ac.una.tareaprogramacion3.model
+        to org.eclipse.persistence.core, org.eclipse.persistence.jpa, jakarta.persistence;
+
+    // Si cargas FXML desde /views, déjalo abierto a FXML
     opens cr.ac.una.tareaprogramacion3.views to javafx.fxml;
-   
 }

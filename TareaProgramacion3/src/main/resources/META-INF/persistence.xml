@@ -1,44 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence               https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
-  <persistence-unit name="AdmProyectosPU" transaction-type="RESOURCE_LOCAL">
-    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <!-- Entidades JPA -->
-    <class>cr.ac.una.tareaprogramacion3.model.Proyecto</class>
-    <class>cr.ac.una.tareaprogramacion3.model.Actividad</class>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
+  <persistence-unit name="ProyectoPU" transaction-type="RESOURCE_LOCAL">
     <class>cr.ac.una.tareaprogramacion3.model.Administrador</class>
-    <class>cr.ac.una.tareaprogramacion3.model.SeguimientoProyecto</class>
-    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
     <properties>
-      <!-- Configuración de la base de datos Oracle -->
+      <!-- Provider explícito ayuda en proyectos modulares -->
+      <property name="jakarta.persistence.provider"
+                value="org.eclipse.persistence.jpa.PersistenceProvider"/>
+
+      <!-- JDBC Oracle (⚠️ AJUSTAR) -->
       <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XEPDB1"/>
-      <property name="jakarta.persistence.jdbc.user" value="PrograTres"/>
-      <property name="jakarta.persistence.jdbc.password" value="PrograTres123"/>
-      <!-- Configuración de Hibernate -->
-      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
-      <!-- Configuración de schema -->
-      <property name="hibernate.default_schema" value="PROGRAMATRES"/>
-      <!-- Estrategia de DDL -->
-      <property name="hibernate.hbm2ddl.auto" value="validate"/>
-      <!-- Mostrar SQL en consola para debug -->
-      <property name="hibernate.show_sql" value="true"/>
-      <property name="hibernate.format_sql" value="true"/>
-      <!-- Configuración de conexiones -->
-      <property name="hibernate.connection.pool_size" value="10"/>
-      <property name="hibernate.connection.autocommit" value="false"/>
-      <!-- Configuración de cache de segundo nivel -->
-      <property name="hibernate.cache.use_second_level_cache" value="false"/>
-      <property name="hibernate.cache.use_query_cache" value="false"/>
-      <!-- Configuración de logging -->
-      <property name="hibernate.use_sql_comments" value="true"/>
-      <!-- Configuración de transacciones -->
-      <property name="hibernate.transaction.jta.platform" value="org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform"/>
-      <!-- Configuración de generación de IDs -->
-      <property name="hibernate.id.new_generator_mappings" value="true"/>
-      <!-- Configuración para Oracle sequences -->
-      <property name="hibernate.id.db_structure_naming_strategy" value="single"/>
-      <!-- Configuración de tiempo de espera -->
-      <property name="hibernate.connection.provider_disables_autocommit" value="true"/>
+      <!-- SERVICE_NAME -->
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/FREEPDB1"/>
+      <!-- Si usas SID en vez de SERVICE_NAME, usa: jdbc:oracle:thin:@TU_HOST:1521:TU_SID -->
+      <property name="jakarta.persistence.jdbc.user" value="una"/>
+      <property name="jakarta.persistence.jdbc.password" value="una"/>
+
+      <!-- EclipseLink -->
+      <property name="eclipselink.logging.level" value="INFO"/>
+      <property name="eclipselink.target-database" value="Oracle"/>
+      <property name="eclipselink.weaving" value="static"/>
+      <property name="eclipselink.ddl-generation" value="none"/>
     </properties>
   </persistence-unit>
 </persistence>
+
+
+  
