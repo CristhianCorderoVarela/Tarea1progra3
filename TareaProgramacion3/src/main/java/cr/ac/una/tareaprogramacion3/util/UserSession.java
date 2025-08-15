@@ -1,10 +1,10 @@
 package cr.ac.una.tareaprogramacion3.util;
 
-import cr.ac.una.tareaprogramacion3.model.Administrador;
+import cr.ac.una.client.soap.AdministradorDto;
 
 public final class UserSession {
     private static UserSession INSTANCE;
-    private Administrador admin;
+    private AdministradorDto admin;
 
     private UserSession() {}
 
@@ -13,7 +13,7 @@ public final class UserSession {
         return INSTANCE;
     }
 
-    public Administrador getAdmin() { return admin; }
-    public void setAdmin(Administrador admin) { this.admin = admin; }
+    public AdministradorDto getAdmin() { return admin; }
+    public void setAdmin(AdministradorDto admin) { this.admin = admin; }
     public void clear() { this.admin = null; }
 }

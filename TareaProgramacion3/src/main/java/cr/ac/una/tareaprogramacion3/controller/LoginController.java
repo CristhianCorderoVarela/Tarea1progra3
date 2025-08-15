@@ -1,97 +1,100 @@
 package cr.ac.una.tareaprogramacion3.controller;
 
+import cr.ac.una.client.soap.AdministradorDto;
 import cr.ac.una.tareaprogramacion3.service.AdministradorService;
 import cr.ac.una.tareaprogramacion3.util.Controller;
 import cr.ac.una.tareaprogramacion3.util.FlowController;
 import cr.ac.una.tareaprogramacion3.util.UserSession;
+import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.Optional;
 
 public class LoginController extends Controller {
 
-    @FXML
-    private TextField txtUsuario;
+    @FXML private TextField txtUsuario;
+    @FXML private PasswordField txtContraseña;
+    @FXML private Button btnInicioSesion;
+    @FXML private Label lblErrorLogin;
+    @FXML private Label lblEstadoWS;
 
-    @FXML
-    private PasswordField txtContraseña;
+    private final BooleanProperty bloqueando = new SimpleBooleanProperty(false);
+    private final AdministradorService adminService = new AdministradorService();
 
-    @FXML
-    private Label lblErrorLogin;
-
-    @FXML
-    private Button btnInicioSesion;
-
-    @FXML
-    private Button BtnRegistrarUsuario;
-
-    @FXML
-    private Button btnAcercaDe;
-private final AdministradorService adminService = new AdministradorService();
-    private Stage stage;
+    public LoginController() {}
 
     @Override
+    @FXML
     public void initialize() {
-        // Listener para habilitar el botón solo si ambos campos tienen texto
-        txtUsuario.textProperty().addListener((obs, oldVal, newVal) -> validarCampos());
-        txtContraseña.textProperty().addListener((obs, oldVal, newVal) -> validarCampos());
+        if (lblErrorLogin != null) lblErrorLogin.setText("");
 
-        lblErrorLogin.setText("");
-    }
-
-    private void validarCampos() {
-        boolean habilitar = !txtUsuario.getText().isBlank() && !txtContraseña.getText().isBlank();
-        btnInicioSesion.setDisable(!habilitar);
-    }
-
-    @Override
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    @Override
-    public Stage getStage() {
-        return this.stage;
-    }
-
-    @Override
-    public void setAccion(String accion) {
-        // No se requiere por ahora
-    }
-
-     @FXML
-    public void onActionBtnInicioSesion(ActionEvent event) {
-        String usuario = txtUsuario.getText().trim();
-        String contrasenna = txtContraseña.getText().trim();
-
-        lblErrorLogin.setText("");
-
-        try {
-            var opt = adminService.login(usuario, contrasenna);
-            if (opt.isPresent()) {
-                // Guardamos el admin en sesión
-                UserSession.get().setAdmin(opt.get());
-FlowController.getInstance().goMain();   // abre la principal en mainStage
-Stage loginStage = (Stage) btnInicioSesion.getScene().getWindow();
-loginStage.close();                      // cierra la del login
-
-            } else {
-                lblErrorLogin.setText("Usuario o contraseña incorrectos, o usuario INACTIVO.");
-            }
-        } catch (Exception ex) {
-            lblErrorLogin.setText("Error al validar credenciales. Revise la conexión a la base de datos.");
+        if (btnInicioSesion != null && txtUsuario != null && txtContraseña != null) {
+            BooleanBinding formVacio = txtUsuario.textProperty().isEmpty()
+                    .or(txtContraseña.textProperty().isEmpty());
+            btnInicioSesion.disableProperty().bind(formVacio.or(bloqueando));
         }
+        actualizarEstadoWS();
+    }
+
+    private void actualizarEstadoWS() {
+        if (lblEstadoWS == null) return;
+        lblEstadoWS.setText("Estado WS: verificando...");
+
+        Task<Boolean> t = new Task<>() {
+            @Override protected Boolean call() {
+                return adminService.isServerUp();
+            }
+        };
+        t.setOnSucceeded(ev -> {
+            boolean ok = t.getValue();
+            lblEstadoWS.setStyle(ok ? "-fx-text-fill:#1b8a2f;" : "-fx-text-fill:#cc0000;");
+            lblEstadoWS.setText(ok ? "Estado WS: en línea." : "Estado WS: sin conexión.");
+        });
+        new Thread(t, "ping-ws").start();
     }
 
     @FXML
-    public void onActionBtnRegistrarUsuario(ActionEvent event) {
-        FlowController.getInstance().goViewInWindow("RegisterNewAccount");
-    }
+    private void onActionBtnInicioSesion(ActionEvent event) {
+        if (lblErrorLogin != null) lblErrorLogin.setText("");
 
-    @FXML
-    public void onActionBtnAcercaDe(ActionEvent event) {
-        FlowController.getInstance().goViewInWindow("About");
+        String usuario = txtUsuario != null ? txtUsuario.getText().trim() : "";
+        String contrasenna = txtContraseña != null ? txtContraseña.getText().trim() : "";
+
+        if (usuario.isEmpty() || contrasenna.isEmpty()) {
+            if (lblErrorLogin != null) lblErrorLogin.setText("Ingrese usuario y contraseña.");
+            return;
+        }
+
+        bloqueando.set(true);
+
+        Task<Void> t = new Task<>() {
+            @Override protected Void call() {
+                Optional<AdministradorDto> opt = adminService.login(usuario, contrasenna);
+                Platform.runLater(() -> {
+                    bloqueando.set(false);
+                    if (opt.isPresent()) {
+                        UserSession.get().setAdmin(opt.get());
+                        FlowController.getInstance().goMain();
+                        Stage s = (Stage) btnInicioSesion.getScene().getWindow();
+                        if (s != null) s.close();
+                    } else {
+                        if (lblErrorLogin != null)
+                            lblErrorLogin.setText("Usuario/contraseña inválidos o usuario inactivo.");
+                    }
+                });
+                return null;
+            }
+        };
+        new Thread(t, "login-ws").start();
     }
 }

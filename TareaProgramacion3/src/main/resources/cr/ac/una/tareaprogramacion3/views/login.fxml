@@ -51,14 +51,6 @@
                               <PasswordField fx:id="txtContraseña" maxWidth="400" promptText="Ingresar Contraseña" />
                               <Label fx:id="lblErrorLogin" maxWidth="400" textFill="red" wrapText="true" />
                               <Button fx:id="btnInicioSesion" disable="true" maxWidth="400" onAction="#onActionBtnInicioSesion" prefWidth="328.0" styleClass="boton-menu-activo" text="Iniciar sesión" />
-                              <Button fx:id="BtnRegistrarUsuario" onAction="#onActionBtnRegistrarUsuario" styleClass="boton-link-verde" text="¿No tienes cuenta? Regístrate aquí">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font></Button>
-                              <Button fx:id="btnAcercaDe" onAction="#onActionBtnAcercaDe" styleClass="boton-link-verde" text="Acerca de">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font></Button>
                            </children>
                         </VBox>
                         <Region VBox.vgrow="ALWAYS" />

@@ -18,11 +18,11 @@
     <!-- JavaFX -->
     <javafx.version>23.0.1</javafx.version>
 
-    <!-- Jakarta / JPA / EclipseLink -->
+    <!-- Jakarta / JPA / EclipseLink (opcionales en el cliente) -->
     <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
     <eclipselink.version>4.0.2</eclipselink.version>
 
-    <!-- Oracle JDBC -->
+    <!-- Oracle JDBC (solo si lo sigues usando en el cliente) -->
     <oracle.driver.version>23.4.0.24.05</oracle.driver.version>
   </properties>
 
@@ -39,21 +39,19 @@
       <version>${javafx.version}</version>
     </dependency>
 
-    <!-- Jakarta Persistence API -->
+    <!-- (Opcional) JPA/EclipseLink en el cliente -->
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
       <version>${jakarta.persistence.version}</version>
     </dependency>
-
-    <!-- EclipseLink (Jakarta) -->
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
       <version>${eclipselink.version}</version>
     </dependency>
 
-    <!-- Oracle JDBC (runtime está bien; si quisieras usar requires oracle.jdbc, quita el scope) -->
+    <!-- (Opcional) Oracle JDBC en el cliente -->
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ojdbc11</artifactId>
@@ -61,7 +59,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Opcionales -->
+    <!-- Utilidades (lo que ya usabas) -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
@@ -72,27 +70,40 @@
       <artifactId>log4j-core</artifactId>
       <version>2.23.1</version>
     </dependency>
+
+    <!-- ✅ SOAP (Jakarta / Metro 4) - runtime -->
     <dependency>
-      <groupId>org.glassfish.metro</groupId>
-      <artifactId>webservices-rt</artifactId>
-      <version>2.3</version>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+<!-- JWS (Jakarta) - necesario porque module-info requiere 'jakarta.jws' -->
+
+
+    <!-- JAXB (necesario en Java 21 para (de)serializar tipos del WS) -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.4</version>
     </dependency>
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>src</directory>
-        <includes>
-          <include>jax-ws-catalog.xml</include>
-          <include>wsdl/**</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
     <plugins>
       <!-- Compilador -->
       <plugin>
@@ -104,7 +115,7 @@
         </configuration>
       </plugin>
 
-      <!-- JavaFX: sin javafxVersion ni modules en configuration -->
+      <!-- JavaFX -->
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -113,24 +124,40 @@
           <mainClass>cr.ac.una.tareaprogramacion3.App</mainClass>
         </configuration>
       </plugin>
+
+      <!-- ✅ Plugin moderno para generar el cliente (wsimport) -->
+      <!-- Si ya usas "Web Service References" de NetBeans y NO quieres generar con Maven,
+           puedes comentar todo este plugin. -->
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>com.sun.xml.ws</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
-        <dependencies>
-          <dependency>
-            <groupId>javax.xml</groupId>
-            <artifactId>webservices-api</artifactId>
-            <version>2.0</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <sourceDestDir>${project.build.directory}/generated-sources/jaxws-wsimport</sourceDestDir>
-          <xnocompile>true</xnocompile>
-          <verbose>true</verbose>
-          <extension>true</extension>
-          <catalog>${basedir}/src/jax-ws-catalog.xml</catalog>
-        </configuration>
+        <version>4.0.2</version>
+        <executions>
+          <execution>
+            <id>wsimport-authws</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <!-- Genera directamente desde el WSDL publicado -->
+              <wsdlUrls>
+                <wsdlUrl>http://localhost:8080/AuthService/AuthWS?wsdl</wsdlUrl>
+              </wsdlUrls>
+              <!-- Paquete destino de las clases generadas -->
+              <packageName>cr.ac.una.client.soap</packageName>
+              <!-- Deja la compilación al maven-compiler -->
+              <xnocompile>true</xnocompile>
+              <!-- Permitir imports externos de esquemas si fuese necesario -->
+              <vmArgs>
+                <vmArg>-Djakarta.xml.accessExternalSchema=all</vmArg>
+              </vmArgs>
+              <!-- (Opcional) carpeta destino de fuentes generadas
+              <sourceDestDir>${project.build.directory}/generated-sources/wsimport</sourceDestDir>
+              -->
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -4,7 +4,7 @@
     <!-- Usa el recurso JNDI creado en Payara -->
     <jta-data-source>jdbc/AdmProyectos</jta-data-source>
     <!-- Deja que JPA escanee tus entidades automáticamente -->
-    <class>cr.ac.una.tareaprogramacion3.model.Administrador</class>
+    <class>cr.ac.una.admproyectosws.model.Administrador</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <!-- Proveedor Jakarta (EclipseLink 4.x en Payara 6) -->
