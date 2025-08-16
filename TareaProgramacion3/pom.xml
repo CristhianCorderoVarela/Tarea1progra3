@@ -101,6 +101,12 @@
       <artifactId>jaxb-runtime</artifactId>
       <version>4.0.4</version>
     </dependency>
+    <dependency>
+      <groupId>una.ac.cr</groupId>
+      <artifactId>AdmProyectos</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 
   <build>

@@ -9,7 +9,7 @@
       fx:controller="cr.ac.una.tareaprogramacion3.controller.WelcomeViewController"
       alignment="CENTER"
       spacing="16.0"
-      prefWidth="800" prefHeight="500"
+      prefWidth="800" prefHeight="600"
       style="-fx-background-color: white;">
     <children>
         <Label text="¡Bienvenido/a!" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
